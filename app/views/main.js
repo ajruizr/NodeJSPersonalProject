@@ -6,7 +6,7 @@ window.addEventListener('load', function (e) {
 function App(){
     tasks = [];
     const starting = async ()=>{
-        const size =  await SizeAxiosService.get();
+        const size =  await TasksAxiosService.getSize();
         const lista =  await TasksAxiosService.get();
         
         for (let i = 0; i < size.count; i++) {
@@ -52,7 +52,7 @@ class Box {
         this.text = text;
         this.text.classList.add('container__box__text');
         this.unpaint();
-        this.text.innerHTML=`-------NAME : ${item.name},  DESCRIPTION: ${item.description},   DUE TO: ${item.due_date},   CREATED AT : ${item.creation_date}-----`;
+        this.text.innerHTML=`-&nbsp&nbsp&nbspNAME : <strong>${item.name} </strong>,&nbsp&nbsp&nbsp -DESCRIPTION: ${item.description},&nbsp&nbsp&nbsp  -DUE TO: ${item.due_date},&nbsp&nbsp&nbsp-CREATED AT : ${item.creation_date}`;
         
         
         /** Remove button */
@@ -69,13 +69,12 @@ class Box {
         // Remove button on action
         button.addEventListener('click',async function(e){
             try {
-                const returned= await TaskRemoveAxiosService.remove(item.task_id);
-                
+                const returned= await TasksAxiosService.remove(item.task_id);
                 if (!returned){
                     console.log('Item wasnt removed')
                 }else{
-                    //refresh page to show changes
-                    window.location.reload();
+                    //removing child to show changes
+                    container.removeChild(box)
                 }
             } catch (error) {
                 console.error(error);
@@ -116,9 +115,6 @@ class TasksAxiosService {
                 throw Errors.Unexpected();
         }
     }
-}
-
-class TaskRemoveAxiosService{
     static async remove(taskId){
         const response= await axios.delete(`/${taskId}`, { baseURL: BASE_URL });
         switch (response.status) {
@@ -130,11 +126,7 @@ class TaskRemoveAxiosService{
                 throw Errors.Unexpected();
         }
     }
-}
-
-class SizeAxiosService {
-
-    static async get() {
+    static async getSize() {
         const response = await axios.get(`/size`, { baseURL: BASE_URL });
         switch (response.status) {
             case 200:
@@ -145,5 +137,12 @@ class SizeAxiosService {
                 throw Errors.Unexpected();
         }
     }
+}
+
+
+
+class SizeAxiosService {
+
+    
 }
 const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x);
