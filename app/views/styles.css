@@ -64,12 +64,17 @@ body {
 
 
 .button_add{
+    float: right;
+    cursor: pointer;
     background-color: #4CAF50; /* Green */
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 10px 22px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-  }
+}
+.button_add:hover, .button_add:active {
+    opacity: 0.5;
+}

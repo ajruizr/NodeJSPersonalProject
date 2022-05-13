@@ -47,7 +47,7 @@ class Entity {
      * @param {Date} due_date
      */
     async insert(name, description, due_date){
-        const rows = await db.any(`INSERT INTO ${this.table} (name, description, due_date) VALUES(${name}, ${description}, ${due_date});`);
+        const rows = await db.any(`INSERT INTO ${this.table} (name, description, due_date) VALUES('${name}','${description}','${due_date}') RETURNING *;`);
         return rows.length > 0 ? rows[0] : null;
     }
     /**

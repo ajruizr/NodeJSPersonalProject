@@ -2,20 +2,22 @@ window.addEventListener('load', function (e) {
     
     document.app = new App();
 });
-
+let i = 0;
 function App(){
-    tasks = [];
+    tasks = [];   
+    
     const starting = async ()=>{
         const size =  await TasksAxiosService.getSize();
         const lista =  await TasksAxiosService.get();
         
-        for (let i = 0; i < size.count; i++) {
+        for (i; i < size.count; i++) {
 
             const boxNumber = i;
             const item = lista[i];
             const box = new Box(boxNumber,item);
             tasks.push(box);
         }
+        formbutton=new Form();
     }
     starting()
 }
@@ -23,6 +25,7 @@ function App(){
 
 const BASE_URL = 'http://localhost:9001/v1/tasks';
 const BOX_CONTAINER_ID = 'box-container-id';
+const FORM_CONTAINER_ID = 'form-creation-id';
 
 class Box {
 
@@ -94,6 +97,71 @@ class Box {
     }
 }
 
+class Form{
+    /** @type {HTMLButtonElement} */
+    button = null;
+
+    constructor(){
+         /** Form div */
+        const formdiv = document.getElementById(FORM_CONTAINER_ID);
+
+        /** button add creation */
+        const button =document.createElement('button');
+        formdiv.appendChild(button);
+        this.button=button;
+        this.button.classList.add('button_add');
+        this.button.innerHTML=`Add Task`;
+
+        /** In case button is clic */
+        button.addEventListener('click',async function(e){
+            /**removing button */
+            formdiv.removeChild(button);
+            /** Form creation */
+            const form = document.createElement('form');
+            formdiv.appendChild(form);
+            form.setAttribute('id','add-task');
+            /** labels and inputs creation*/
+            form.innerHTML=`
+            <div>
+                <label for="add-task-name">Name of task:</label>
+                <input name="name" id="transactions-form-amount" type="text" required maxlength="40" size="20">
+                <label for="add-task-description">Description:</label>
+                <input name="description" id="transactions-form-amount" type="text" required maxlength="40" size="20">
+
+                <label for="add-task-due-date">Due_date</label>
+                <input name="due_date" id="add-task-due-date" type="date">
+            </div>
+            `;
+            const sendbutton=document.createElement('button');
+            form.appendChild(sendbutton);
+            sendbutton.classList.add('button_add');
+            sendbutton.innerHTML=`Add Task`;
+            sendbutton.addEventListener('click', async function(e){
+                debugger
+                try{
+                    const inputs=form.querySelectorAll('input');
+                    const object={};
+                    
+                    for(const input of inputs){
+                        const value = input.value;
+                        const key = input.name;
+                        object[key] = value;
+                    }
+                    const item= await TasksAxiosService.save(object);
+                    const box = new Box(i,item);
+                }catch (error) {
+                    console.error(error);
+                }
+                
+                formdiv.removeChild(form)
+                formdiv.appendChild(button);
+            })
+
+        })
+        
+    }
+}
+
 class Errors {
     static TaskNotFound() {
         return Error(`Task  not found`);
@@ -137,12 +205,20 @@ class TasksAxiosService {
                 throw Errors.Unexpected();
         }
     }
+    static async save(task){
+        const taskhelper={name: `${task.name}`, description: `${task.description}`, due_date: `${task.due_date}`};
+        
+        const response= await axios.post(BASE_URL,taskhelper);
+        
+        switch (response.status) {
+            case 200:
+                return response.data;
+            case 404:
+                throw Errors.TaskNotFound();
+            default:
+                throw Errors.Unexpected();
+        }
+    }
 }
 
-
-
-class SizeAxiosService {
-
-    
-}
 const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x);

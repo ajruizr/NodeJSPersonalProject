@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { tasks } = require('../../db/entities');
 
+router.use(express.json());
 router.post('/',(req,res)=>{//method to get the post from form to insert a new task
-    const name= req.params.name;
-    const description=req.params.description;
-    const due_date=req.params.due_date;
-    const data=  tasks.insert(name,description,due_date);
-    if (data) {
-        res.sendStatus(200);
+    const data=req.body;
+    const datas= tasks.insert(data.name,data.description,data.due_date);
+    if (datas) {
+        res.status(200)
+        res.send(data);
       } else {
         res.sendStatus(404);
     }
