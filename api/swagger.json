@@ -1,0 +1,215 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "TimeKeeper API",
+      "description": "Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:9001/v1",
+        "description": "Main server"
+      }
+    ],
+    "tags": [
+      {
+        "name": "Tasks",
+        "description": "The main entry points to the Task list"
+      }
+    ],
+    "paths": {
+      "/tasks/{taskId}": {
+        "delete": {
+          "summary": "Deletes by id the Task",
+          "description": "Will remove a task from the database for the selected id and return it.",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "taskId",
+              "schema": {
+                "type": "integer"
+              },
+              "required": true,
+              "description": "Numeric id of the task to get"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The Task was found and deleted",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "items": {
+                      "$ref": "#/components/schemas/Task"
+                    }
+                  },
+                  "examples": {
+                    "ColorExample": {
+                      "$ref": "#/components/examples/TaskExample"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "The Task was not found"
+            }
+          },
+          "tags": [
+            "Tasks"
+          ]
+        }
+      },
+      "/tasks/size": {
+        "get": {
+          "summary": "Total number of tasks.",
+          "description": "Returns the current size of rows in table Task database.",
+          "responses": {
+            "200": {
+              "description": "The total number of rows was returned",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "number"
+                  },
+                  "example": {
+                    "count": 10
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "The server encountered an unexpected condition."
+            }
+          },
+          "tags": [
+            "Tasks"
+          ]
+        }
+      },
+      "/tasks": {
+        "get": {
+          "summary": "Returns the whole Task list.",
+          "description": "Will fetch to the database for all the available Tasks.",
+          "responses": {
+            "200": {
+              "description": "A JSON array of tasks",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Task"
+                    }
+                  },
+                  "examples": {
+                    "ColorExample": {
+                      "$ref": "#/components/examples/ColorArrayExample"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Tasks"
+          ]
+        },
+        "post": {
+          "summary": "Inserts a new Task in database.",
+          "description": "Will recieve a JSON in body with a task element to Insert in database.",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "task",
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              },
+              "example": {
+                "name": "Do my Homework",
+                "description": "Ms. Portman Project",
+                "due_date": "2023-01-01"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "The task was added to database"
+            },
+            "500": {
+              "description": "The server encountered an unexpected condition."
+            }
+          },
+          "tags": [
+            "Tasks"
+          ]
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Task": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "creation_date": {
+              "type": "string"
+            },
+            "due_date": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name description dueDate"
+          ]
+        }
+      },
+      "examples": {
+        "TaskExample": {
+          "summary": "Task",
+          "value": {
+            "taskId": 1,
+            "name": "Do my Homework",
+            "description": "Ms. Portman Project",
+            "creation_date": "2022-05-09 19:10:44.525284-05",
+            "due_date": "2023-01-01"
+          }
+        },
+        "ColorArrayExample": {
+          "summary": "Color Array",
+          "value": [
+            {
+              "taskId": 1,
+              "name": "Do my Homework",
+              "description": "Ms. Portman Project",
+              "creation_date": "2022-05-09 19:10:44.525284-05",
+              "due_date": "2023-01-01"
+            },
+            {
+              "taskId": 2,
+              "name": "Pay Internet bill",
+              "description": "Pay in cashier",
+              "creation_date": "2022-05-09 21:10:44.525284-05",
+              "due_date": "2022-05-27"
+            },
+            {
+              "taskId": 3,
+              "name": "Find a car to buy",
+              "description": "Preferably a brand new and not to expensive",
+              "creation_date": "2022-05-09 21:10:44.525284-05",
+              "due_date": null
+            }
+          ]
+        }
+      }
+    }
+  }
