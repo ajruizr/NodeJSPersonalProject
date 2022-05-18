@@ -55,7 +55,7 @@ class Box {
         this.text = text;
         this.text.classList.add('container__box__text');
         this.unpaint();
-        this.text.innerHTML=`-&nbsp&nbsp&nbspNAME : <strong>${item.name} </strong>,&nbsp&nbsp&nbsp -DESCRIPTION: ${item.description},&nbsp&nbsp&nbsp  -DUE TO: ${item.due_date},&nbsp&nbsp&nbsp-CREATED AT : ${item.creation_date}`;
+        this.text.innerHTML=`-&nbsp&nbsp&nbspNAME : <strong>${item.name} </strong>,&nbsp&nbsp&nbsp -DESCRIPTION: ${item.description},&nbsp&nbsp&nbsp  -DUE TO: ${item.dueDate},&nbsp&nbsp&nbsp-CREATED AT : ${item.creationDate}`;
         
         
         /** Remove button */
@@ -72,7 +72,7 @@ class Box {
         // Remove button on action
         button.addEventListener('click',async function(e){
             try {
-                const returned= await TasksAxiosService.remove(item.task_id);
+                const returned= await TasksAxiosService.remove(item.taskId);
                 if (!returned){
                     console.log('Item wasnt removed')
                 }else{
@@ -175,7 +175,7 @@ class TasksAxiosService {
         const response = await axios.get(`/`, { baseURL: BASE_URL });
         switch (response.status) {
             case 200:
-                return response.data;
+                return await response.data;
             case 404:
                 throw Errors.TaskNotFound();
             default:
@@ -186,7 +186,7 @@ class TasksAxiosService {
         const response= await axios.delete(`/${taskId}`, { baseURL: BASE_URL });
         switch (response.status) {
             case 200:
-                return response.data;
+                return await response.data;
             case 404:
                 throw Errors.TaskNotFound();
             default:
@@ -197,7 +197,7 @@ class TasksAxiosService {
         const response = await axios.get(`/size`, { baseURL: BASE_URL });
         switch (response.status) {
             case 200:
-                return response.data;
+                return await response.data;
             case 404:
                 throw Errors.TaskNotFound();
             default:
@@ -211,7 +211,7 @@ class TasksAxiosService {
         
         switch (response.status) {
             case 200:
-                return response.data;
+                return await response.data;
             case 404:
                 throw Errors.TaskNotFound();
             default:
