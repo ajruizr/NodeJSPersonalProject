@@ -9,6 +9,9 @@ const swaggerdoc=require('./swagger.json');
 const server = express();
 const port = 9001;
 
+// Adding middleware to parse JSON HTTP bodies
+server.use(express.json());
+
 // Adding CORS
 server.use(cors(require('./cors.config.json')));
 

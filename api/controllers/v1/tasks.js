@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { tasks } = require('../../db/entities');
 
-router.use(express.json());
 router.post('/',(req,res)=>{//method to get the post from form to insert a new task
     const data=req.body;
     const datas= tasks.insert(data.name,data.description,data.due_date);

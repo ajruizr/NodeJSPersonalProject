@@ -137,7 +137,6 @@ class Form{
             sendbutton.classList.add('button_add');
             sendbutton.innerHTML=`Add Task`;
             sendbutton.addEventListener('click', async function(e){
-                debugger
                 try{
                     const inputs=form.querySelectorAll('input');
                     const object={};
