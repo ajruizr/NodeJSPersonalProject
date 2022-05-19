@@ -117,12 +117,10 @@ class Form{
             /**removing button */
             formdiv.removeChild(button);
             /** Form creation */
-            const form = document.createElement('form');
-            formdiv.appendChild(form);
+            const form = document.getElementById('form-creation-id');
             form.setAttribute('id','add-task');
             /** labels and inputs creation*/
             form.innerHTML=`
-            <div>
                 <label for="add-task-name">Name of task:</label>
                 <input name="name" id="transactions-form-amount" type="text" required maxlength="40" size="20">
                 <label for="add-task-description">Description:</label>
@@ -130,7 +128,6 @@ class Form{
 
                 <label for="add-task-due-date">Due_date</label>
                 <input name="due_date" id="add-task-due-date" type="date">
-            </div>
             `;
             const sendbutton=document.createElement('button');
             form.appendChild(sendbutton);
@@ -147,12 +144,12 @@ class Form{
                         object[key] = value;
                     }
                     const item= await TasksAxiosService.save(object);
-                    const box = new Box(i,item);
+                    const box = new Box(i, item);
                 }catch (error) {
                     console.error(error);
                 }
                 
-                formdiv.removeChild(form)
+                form.innerHTML='';
                 formdiv.appendChild(button);
             })
 

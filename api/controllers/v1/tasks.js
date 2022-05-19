@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { tasks } = require('../../db/entities');
 
-router.post('/',(req,res)=>{//method to get the post from form to insert a new task
+router.post('/',async (req,res)=>{//method to get the post from form to insert a new task
     const data=req.body;
-    const datas= tasks.insert(data.name,data.description,data.due_date);
+    const datas= await tasks.insert(data.name,data.description,data.due_date);
     if (datas) {
         res.status(200)
-        res.send(data);
+        res.send(datas);
       } else {
         res.sendStatus(404);
     }
