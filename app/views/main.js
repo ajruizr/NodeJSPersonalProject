@@ -7,17 +7,22 @@ function App(){
     tasks = [];   
     
     const starting = async ()=>{
-        const size =  await TasksAxiosService.getSize();
-        const lista =  await TasksAxiosService.get();
-        
-        for (i; i < size.count; i++) {
+        const loginData= await TasksAxiosService.login();
+        const logincheck= await TasksAxiosService.loginCheck(loginData.token);
+        if (logincheck) {
+            const size =  await TasksAxiosService.getSize();
+            const lista =  await TasksAxiosService.get();
+            
+            for (i; i < size.count; i++) {
 
-            const boxNumber = i;
-            const item = lista[i];
-            const box = new Box(boxNumber,item);
-            tasks.push(box);
+                const boxNumber = i;
+                const item = lista[i];
+                const box = new Box(boxNumber,item);
+                tasks.push(box);
+            }
+            formbutton=new Form();
         }
-        formbutton=new Form();
+        
     }
     starting()
 }
@@ -211,6 +216,30 @@ class TasksAxiosService {
                 return await response.data;
             case 404:
                 throw Errors.TaskNotFound();
+            default:
+                throw Errors.Unexpected();
+        }
+    }
+    static async login(){
+        const response=await axios.post(BASE_URL + "/login");
+        switch(response.status){
+            case 200:
+                return await response.data;
+            default:
+                throw Errors.Unexpected();
+        }
+    }
+    static async loginCheck(token){
+        const response=await axios.post(BASE_URL + "/logincheck",{
+            headers:{
+                Authorization: 'Bearer ' + token
+            }
+        });
+        switch (response.status) {
+            case 200:
+                return await response.data;
+            case 403:
+                window.alert("403: Forbidden ( Not logging yet)")
             default:
                 throw Errors.Unexpected();
         }
